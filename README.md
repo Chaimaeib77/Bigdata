@@ -85,10 +85,10 @@ Sentiment labels are created as:
 - El Mouden Jihane
 - Karim Doha
 ## Application Dahboard
-(images/dashboard1.png)
+(images/dashboard1.jpg)
 
-(images/dashboard2.png)
+(images/dashboard2.jpg)
 
-(images/dashboard3.png)
+(images/dashboard3.jpg)
 ## Supervisor
 Pr. Yasyn EL YUSUFI
