@@ -80,16 +80,16 @@ Sentiment labels are created as:
 - Add real-time alerts for strong negative sentiments.
 - Enhance semantic understanding with contextual NLP techniques.
 
-## Authors
-- Ibourki Chaimae
-- El Mouden Jihane
-- Karim Doha
 ## Application Dahboard
 ![dashboard1](images/dashboard1.jpg)
 
  ![dashboard2](images/dashboard2.jpg)
 
  ![dashboard3](images/dashboard3.jpg)
-
+ 
+## Authors
+- Ibourki Chaimae
+- El Mouden Jihane
+- Karim Doha
 ## Supervisor
 Pr. Yasyn EL YUSUFI
