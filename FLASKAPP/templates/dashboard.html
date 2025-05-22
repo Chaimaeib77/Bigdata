@@ -1,0 +1,274 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <title>Dashboard Amazon Big Data</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <style>
+    :root {
+      --main-bg: #F6F8FC;
+      --kpi-bg: white;
+      --kpi-shadow: rgba(0, 0, 0, 0.05);
+      --border-color: #E0E6ED;
+      --highlight: #3B82F6;
+      --positive: #22C55E;
+      --neutral: #FACC15;
+      --negative: #EF4444;
+    }
+
+    body {
+      background-color: var(--main-bg);
+      font-family: 'Segoe UI', sans-serif;
+      margin: 0;
+      padding: 0;
+      color: #1F2937;
+    }
+
+    .sidebar {
+      width: 230px;
+      position: fixed;
+      top: 0; left: 0; bottom: 0;
+      background: white;
+      padding: 2rem 1rem;
+      border-right: 1px solid var(--border-color);
+      box-shadow: 2px 0 10px rgba(0,0,0,0.03);
+    }
+
+    .sidebar h4 {
+      font-weight: bold;
+      color: var(--highlight);
+      margin-bottom: 2rem;
+      text-align: center;
+    }
+
+    .sidebar a {
+      display: block;
+      padding: 10px 15px;
+      border-radius: 10px;
+      color: #374151;
+      text-decoration: none;
+      margin-bottom: 10px;
+      transition: 0.3s;
+    }
+
+    .sidebar a:hover, .sidebar a.active {
+      background: var(--highlight);
+      color: white;
+    }
+
+    .main {
+      margin-left: 240px;
+      padding: 2rem;
+    }
+
+    .kpi-boxes {
+      display: flex;
+      gap: 1rem;
+      margin-bottom: 2rem;
+    }
+
+    .kpi {
+      background: var(--kpi-bg);
+      box-shadow: 0 5px 20px var(--kpi-shadow);
+      border-radius: 12px;
+      flex: 1;
+      padding: 1rem 1.5rem;
+      text-align: center;
+    }
+
+    .kpi h6 {
+      font-size: 0.9rem;
+      color: #6B7280;
+    }
+
+    .kpi p {
+      font-size: 1.6rem;
+      font-weight: bold;
+    }
+
+    .charts {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 1.5rem;
+    }
+
+    .chart-card {
+      background: white;
+      border-radius: 12px;
+      box-shadow: 0 5px 20px var(--kpi-shadow);
+      padding: 1rem;
+    }
+
+    .chart-card h5 {
+      font-size: 1rem;
+      font-weight: 600;
+      margin-bottom: 1rem;
+      color: var(--highlight);
+    }
+
+    table {
+      font-size: 0.85rem;
+    }
+
+    table th {
+      color: #6B7280;
+    }
+
+    table td {
+      color: #374151;
+    }
+  </style>
+</head>
+<body>
+  <!-- Sidebar -->
+<nav class="sidebar">
+  <h4>AMAZON BIG DATA</h4>
+  <a href="/">Accueil</a>
+  <a href="/dashboard" class="active">Dashboard</a>
+  <a href="/live">Temps Réel</a>
+  <a href="/predict">Prédiction IA</a>
+  <a href="/history">Historique</a>
+  <a href="#">Paramètres</a>
+  <a href="#">Équipe</a>
+</nav>
+
+
+  <!-- Main content -->
+  <div class="main">
+    <!-- KPI section -->
+    <div class="kpi-boxes">
+      <div class="kpi">
+        <h6>👍 Positifs</h6>
+        <p id="posCount">--</p>
+      </div>
+      <div class="kpi">
+        <h6>😐 Neutres</h6>
+        <p id="neuCount">--</p>
+      </div>
+      <div class="kpi">
+        <h6>👎 Négatifs</h6>
+        <p id="negCount">--</p>
+      </div>
+      <div class="kpi">
+        <h6>📊 Total</h6>
+        <p id="totalCount">--</p>
+      </div>
+    </div>
+
+    <!-- Charts section -->
+    <div class="charts">
+      <div class="chart-card">
+        <h5>📈 Évolution des avis</h5>
+        <canvas id="sentimentChart"></canvas>
+      </div>
+      <div class="chart-card">
+        <h5>📊 Répartition des notes (1 à 5)</h5>
+        <canvas id="scoreAsinChart"></canvas>
+      </div>
+      <div class="chart-card">
+        <h5>📌 Répartition des sentiments</h5>
+        <canvas id="sentimentPieChart"></canvas>
+      </div>
+      <div class="chart-card">
+        <h5>📂 Derniers avis</h5>
+        <table class="table table-bordered">
+          <thead><tr><th>Date</th><th>Texte</th><th>Sentiment</th></tr></thead>
+          <tbody id="recentTable"><tr><td colspan="3">Chargement...</td></tr></tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    fetch("/api/stats").then(res => res.json()).then(data => {
+      document.getElementById("posCount").textContent = data["Positive"] || 0;
+      document.getElementById("neuCount").textContent = data["Neutral"] || 0;
+      document.getElementById("negCount").textContent = data["Negative"] || 0;
+
+      const total = (data["Positive"] || 0) + (data["Neutral"] || 0) + (data["Negative"] || 0);
+      document.getElementById("totalCount").textContent = total;
+
+    });
+
+
+    fetch("/api/overall-distribution")
+    .then(res => res.json())
+    .then(data => {
+      const labels = data.map(d => `Note ${d._id}`);
+      const counts = data.map(d => d.count);
+
+      new Chart(document.getElementById("scoreAsinChart"), {
+        type: "bar",
+        data: {
+          labels: labels,
+          datasets: [{
+            label: "Nombre de votes par note",
+            data: counts,
+            backgroundColor: "#3B82F6"
+          }]
+        },
+        options: {
+          scales: {
+            y: {
+              beginAtZero: true,
+              title: { display: true, text: "Nombre de votes" }
+            },
+            x: {
+              title: { display: true, text: "Note attribuée (1 à 5)" }
+            }
+          }
+        }
+      });
+    });
+  
+    fetch("/api/sentiment-pie").then(res => res.json()).then(data => {
+    new Chart(document.getElementById("sentimentPieChart"), {
+      type: "pie",
+      data: {
+        labels: data.map(d => d._id),
+        datasets: [{
+          data: data.map(d => d.count),
+          backgroundColor: ["#22C55E", "#FACC15", "#EF4444"]
+        }]
+      }
+    });
+  });
+
+    fetch("/api/recent").then(res => res.json()).then(data => {
+      const tbody = document.getElementById("recentTable");
+      tbody.innerHTML = "";
+      data.forEach(row => {
+        tbody.innerHTML += `<tr><td>${row.date}</td><td>${row.text}</td><td>${row.sentiment}</td></tr>`;
+      });
+    });
+    fetch("/api/stats-by-date")
+    .then(res => res.json())
+    .then(data => {
+      const labels = data.map(d => d._id);
+      const counts = data.map(d => d.total);
+
+      new Chart(document.getElementById("sentimentChart"), {
+        type: 'line',
+        data: {
+          labels: labels,
+          datasets: [{
+            label: 'Nombre d\'avis par jour',
+            data: counts,
+            borderColor: '#3B82F6',
+            fill: true,
+            backgroundColor: 'rgba(59,130,246,0.2)',
+            tension: 0.4
+          }]
+        },
+        options: {
+          scales: {
+            x: { title: { display: true, text: 'Date' } },
+            y: { title: { display: true, text: 'Nombre d\'avis' }, beginAtZero: true }
+          }
+        }
+      });
+    });
+  </script>
+</body>
+</html>

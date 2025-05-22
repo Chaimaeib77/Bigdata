@@ -1,0 +1,155 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8" />
+  <title>Prédiction IA – Amazon</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet" />
+  <style>
+    :root {
+      --main-bg: #F6F8FC;
+      --kpi-bg: white;
+      --kpi-shadow: rgba(0, 0, 0, 0.05);
+      --border-color: #E0E6ED;
+      --highlight: #3B82F6;
+    }
+
+    body {
+      background-color: var(--main-bg);
+      font-family: 'Segoe UI', sans-serif;
+      margin: 0;
+      padding: 0;
+      color: #1F2937;
+    }
+
+    .sidebar {
+      width: 230px;
+      position: fixed;
+      top: 0; left: 0; bottom: 0;
+      background: white;
+      padding: 2rem 1rem;
+      border-right: 1px solid var(--border-color);
+      box-shadow: 2px 0 10px rgba(0,0,0,0.03);
+    }
+
+    .sidebar h4 {
+      font-weight: bold;
+      color: var(--highlight);
+      margin-bottom: 2rem;
+      text-align: center;
+    }
+
+    .sidebar a {
+      display: block;
+      padding: 10px 15px;
+      border-radius: 10px;
+      color: #374151;
+      text-decoration: none;
+      margin-bottom: 10px;
+      transition: 0.3s;
+    }
+
+    .sidebar a:hover, .sidebar a.active {
+      background: var(--highlight);
+      color: white;
+    }
+
+    .main {
+      margin-left: 240px;
+      padding: 2rem;
+    }
+
+    .card-style {
+      background: var(--kpi-bg);
+      border-radius: 12px;
+      box-shadow: 0 8px 20px var(--kpi-shadow);
+      padding: 2rem;
+    }
+
+    h2 {
+      color: var(--highlight);
+      font-size: 1.4rem;
+      margin-bottom: 1.5rem;
+    }
+
+    #result {
+      font-weight: 600;
+      font-size: 1rem;
+      margin-top: 1rem;
+    }
+
+    textarea {
+      resize: vertical;
+      font-size: 1rem;
+    }
+  </style>
+</head>
+<body>
+  <!-- Sidebar -->
+  <nav class="sidebar">
+  <h4>AMAZON BIG DATA</h4>
+  <a href="/">Accueil</a>
+  <a href="/dashboard">Dashboard</a>
+  <a href="/live">Temps Réel</a>
+  <a href="/predict" class="active">Prédiction IA</a>
+  <a href="/history">Historique</a>
+  <a href="#">Paramètres</a>
+  <a href="#">Équipe</a>
+</nav>
+
+
+  <!-- Main -->
+  <div class="main">
+    <div class="card-style">
+      <h2>🤖 Analyse de sentiment IA</h2>
+      <p>Entrez un avis client pour obtenir une prédiction de sentiment.</p>
+
+      <form id="predictForm" class="mb-3">
+        <textarea class="form-control" rows="4" id="inputText" placeholder="Tape ton avis ici..."></textarea>
+        <button class="btn btn-primary mt-3" type="submit">📤 Prédire</button>
+      </form>
+
+      <div id="result" class="alert d-none"></div>
+    </div>
+  </div>
+
+  <script>
+    const form = document.getElementById("predictForm");
+    const resultDiv = document.getElementById("result");
+
+    form.addEventListener("submit", async (e) => {
+      e.preventDefault();
+      const text = document.getElementById("inputText").value.trim();
+      if (!text) {
+        resultDiv.className = "alert alert-warning";
+        resultDiv.textContent = "Veuillez entrer un texte avant de prédire.";
+        resultDiv.classList.remove("d-none");
+        return;
+      }
+
+      resultDiv.className = "alert alert-info";
+      resultDiv.textContent = "Analyse en cours...";
+      resultDiv.classList.remove("d-none");
+
+      try {
+        const res = await fetch("/api/predict", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ text })
+        });
+        const data = await res.json();
+        const sentiment = data.sentiment || "inconnu";
+        let color = "secondary";
+        if (sentiment === "positif") color = "success";
+        else if (sentiment === "négatif") color = "danger";
+        else if (sentiment === "neutre") color = "warning";
+
+        resultDiv.className = `alert alert-${color}`;
+        resultDiv.innerHTML = `Résultat : <strong>${sentiment.toUpperCase()}</strong>`;
+      } catch (error) {
+        resultDiv.className = "alert alert-danger";
+        resultDiv.textContent = "Erreur lors de la prédiction, veuillez réessayer.";
+      }
+    });
+  </script>
+</body>
+</html>

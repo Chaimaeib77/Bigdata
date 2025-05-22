@@ -1,0 +1,146 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8" />
+  <title>Accueil – Projet Big Data Amazon</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet" />
+  <style>
+    :root {
+      --main-bg: #F6F8FC;
+      --kpi-bg: white;
+      --kpi-shadow: rgba(0, 0, 0, 0.05);
+      --border-color: #E0E6ED;
+      --highlight: #3B82F6;
+    }
+
+    body {
+      background-color: var(--main-bg);
+      font-family: 'Segoe UI', sans-serif;
+      margin: 0;
+      padding: 0;
+      color: #1F2937;
+    }
+
+    .sidebar {
+      width: 230px;
+      position: fixed;
+      top: 0; left: 0; bottom: 0;
+      background: white;
+      padding: 2rem 1rem;
+      border-right: 1px solid var(--border-color);
+      box-shadow: 2px 0 10px rgba(0,0,0,0.03);
+    }
+
+    .sidebar h4 {
+      font-weight: bold;
+      color: var(--highlight);
+      margin-bottom: 2rem;
+      text-align: center;
+    }
+
+    .sidebar a {
+      display: block;
+      padding: 10px 15px;
+      border-radius: 10px;
+      color: #374151;
+      text-decoration: none;
+      margin-bottom: 10px;
+      transition: 0.3s;
+    }
+
+    .sidebar a:hover, .sidebar a.active {
+      background: var(--highlight);
+      color: white;
+    }
+
+    .main {
+      margin-left: 240px;
+      padding: 2rem;
+    }
+
+    h2 {
+      color: var(--highlight);
+      font-size: 1.5rem;
+      margin-bottom: 1rem;
+    }
+
+    .card-style {
+      background: var(--kpi-bg);
+      border-radius: 12px;
+      box-shadow: 0 8px 20px var(--kpi-shadow);
+      padding: 1.5rem;
+      font-weight: 500;
+    }
+
+    .card-style h5 {
+      color: var(--highlight);
+      font-weight: 700;
+      font-size: 1.1rem;
+      margin-bottom: 0.8rem;
+    }
+
+    .card-style p {
+      font-style: italic;
+      color: #555;
+      margin: 0;
+    }
+
+    .row > .col-md-6 {
+      margin-bottom: 1.5rem;
+    }
+  </style>
+</head>
+<body>
+  <!-- Sidebar -->
+  <nav class="sidebar">
+    <h4>AMAZON BIG DATA</h4>
+    <a href="/" class="active">Accueil</a>
+    <a href="/dashboard">Dashboard</a>
+    <a href="/live">Temps Réel</a>
+    <a href="/predict">Prédiction IA</a>
+    <a href="/history">Historique</a>
+    <a href="#">Paramètres</a>
+    <a href="#">Équipe</a>
+  </nav>
+
+  <!-- Main content -->
+  <div class="main">
+    <h2>🎯 Projet Amazon Big Data & Intelligence Artificielle</h2>
+    <p class="text-muted mb-4">
+      Cette plateforme vous permet de surveiller, analyser et prédire les sentiments des avis clients Amazon à grande échelle,
+      grâce à une architecture Big Data moderne et des modèles IA performants.
+    </p>
+
+    <div class="alert alert-primary rounded-4 shadow-sm p-4">
+      <strong>🔍 Objectif :</strong> Offrir un tableau de bord interactif en temps réel pour visualiser les avis clients, détecter les tendances et anticiper les comportements consommateurs.
+    </div>
+
+    <div class="row mt-4">
+      <div class="col-md-6">
+        <div class="card-style h-100">
+          <h5>📊 Dashboard des sentiments</h5>
+          <p>Visualisez la répartition des sentiments (positifs, neutres, négatifs) dans les avis récents. Données extraites depuis MongoDB.</p>
+        </div>
+      </div>
+      <div class="col-md-6">
+        <div class="card-style h-100">
+          <h5>⚡ Suivi Temps Réel</h5>
+          <p>Connexion en direct avec Kafka pour réceptionner et analyser les nouveaux avis clients dès leur publication.</p>
+        </div>
+      </div>
+      <div class="col-md-6">
+        <div class="card-style h-100">
+          <h5>🤖 Prédiction IA</h5>
+          <p>Interface utilisateur permettant de tester le modèle d’analyse de sentiment entraîné sur les données Amazon.</p>
+        </div>
+      </div>
+      <div class="col-md-6">
+        <div class="card-style h-100">
+          <h5>🗃️ Historique complet</h5>
+          <p>Accès aux anciens avis enregistrés avec leurs prédictions de sentiment, horodatage, et identifiants produit (ASIN).</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</body>
+</html>

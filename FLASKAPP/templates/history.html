@@ -1,0 +1,148 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8" />
+  <title>Historique des Prédictions – Amazon</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet" />
+  <style>
+    :root {
+      --main-bg: #F6F8FC;
+      --kpi-bg: white;
+      --kpi-shadow: rgba(0, 0, 0, 0.05);
+      --border-color: #E0E6ED;
+      --highlight: #3B82F6;
+    }
+
+    body {
+      background-color: var(--main-bg);
+      font-family: 'Segoe UI', sans-serif;
+      margin: 0;
+      padding: 0;
+      color: #1F2937;
+    }
+
+    .sidebar {
+      width: 230px;
+      position: fixed;
+      top: 0; left: 0; bottom: 0;
+      background: white;
+      padding: 2rem 1rem;
+      border-right: 1px solid var(--border-color);
+      box-shadow: 2px 0 10px rgba(0,0,0,0.03);
+    }
+
+    .sidebar h4 {
+      font-weight: bold;
+      color: var(--highlight);
+      margin-bottom: 2rem;
+      text-align: center;
+    }
+
+    .sidebar a {
+      display: block;
+      padding: 10px 15px;
+      border-radius: 10px;
+      color: #374151;
+      text-decoration: none;
+      margin-bottom: 10px;
+      transition: 0.3s;
+    }
+
+    .sidebar a:hover, .sidebar a.active {
+      background: var(--highlight);
+      color: white;
+    }
+
+    .main {
+      margin-left: 240px;
+      padding: 2rem;
+    }
+
+    .card-style {
+      background: var(--kpi-bg);
+      border-radius: 12px;
+      box-shadow: 0 8px 20px var(--kpi-shadow);
+      padding: 1.5rem;
+    }
+
+    table {
+      font-size: 0.85rem;
+    }
+
+    table th {
+      color: #6B7280;
+    }
+
+    table td {
+      color: #374151;
+    }
+
+    h2 {
+      color: var(--highlight);
+      margin-bottom: 1.5rem;
+      font-size: 1.5rem;
+    }
+  </style>
+</head>
+<body>
+  <nav class="sidebar">
+  <h4>AMAZON BIG DATA</h4>
+  <a href="/">Accueil</a>
+  <a href="/dashboard">Dashboard</a>
+  <a href="/live">Temps Réel</a>
+  <a href="/predict">Prédiction IA</a>
+  <a href="/history" class="active">Historique</a>
+  <a href="#">Paramètres</a>
+  <a href="#">Équipe</a>
+</nav>
+
+
+  <!-- Main -->
+  <div class="main">
+    <div class="card-style">
+      <h2>🗃️ Historique des Prédictions</h2>
+      <table class="table table-bordered table-hover mt-3">
+        <thead class="table-light">
+          <tr>
+            <th>Date</th>
+            <th>ASIN</th>
+            <th>Texte</th>
+            <th>Sentiment</th>
+            <th>Score</th>
+          </tr>
+        </thead>
+        <tbody id="historyBody">
+          <tr><td colspan="5">Chargement...</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <script>
+    fetch("/api/history")
+      .then(res => res.json())
+      .then(data => {
+        const body = document.getElementById("historyBody");
+        body.innerHTML = "";
+        data.forEach(doc => {
+          body.innerHTML += `
+            <tr>
+              <td>${doc.date}</td>
+              <td>${doc.asin}</td>
+              <td>${doc.text}</td>
+              <td><span class="badge bg-${getColor(doc.sentiment)}">${doc.sentiment}</span></td>
+              <td>${(doc.score || 0).toFixed(2)}</td>
+            </tr>
+          `;
+        });
+      });
+
+    function getColor(sentiment) {
+      if (sentiment === "positif") return "success";
+      if (sentiment === "négatif") return "danger";
+      if (sentiment === "neutre") return "secondary";
+      return "light";
+    }
+  </script>
+</body>
+</html>
