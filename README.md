@@ -60,21 +60,20 @@ Sentiment labels are created as:
 - Flask (Python)
 - Docker
 - Python libraries: scikit-learn, pandas, numpy, etc.
-## Project Structure
-    ```bash
-          FLASKAPP/
-           ├── app.py                # Flask backend
-           ├── templates/            # HTML templates
-           ├── utils/                # Utility modules
-           ├── requirements.txt
-          Logistic_Regression_best_model/
-           ├── metadata/
-           ├── stages/
-          Data.json             # Raw data file
-          kafka_producer.py     # Kafka data producer
-          spark_streaming_consumer.py  # Spark streaming consumer & predictor
-          docker-compose.yml
-          amazon_reviews.ipynb  # Jupyter notebook for EDA and model training
+## Project Structure:
+      FLASKAPP/
+       ├── app.py                # Flask backend
+       ├── templates/            # HTML templates
+       ├── utils/                # Utility modules
+       ├── requirements.txt
+      Logistic_Regression_best_model/
+       ├── metadata/
+       ├── stages/
+      Data.json             # Raw data file
+      kafka_producer.py     # Kafka data producer
+      spark_streaming_consumer.py  # Spark streaming consumer & predictor
+      docker-compose.yml
+      amazon_reviews.ipynb  # Jupyter notebook for EDA and model training
 ## Future Improvements
 - Integrate deep learning models (RNN, Transformers) for better accuracy.
 - Extend to multi-platform sentiment analysis (social media, forums).
